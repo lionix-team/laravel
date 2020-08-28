@@ -3,7 +3,18 @@
 This repository is forked from [laravel/laravel](https://github.com/laravel/laravel) and represents configrations, console commands and abstractions our team came with developing Web APIs with Laravel.
 
 -   [Linting](#linting)
+-   [Artisan Code Generator Shorthand](#artisan-code-generator-shorthand)
 -   [Todo](#todo)
+
+## Artisan Code Generator Shorthand
+
+In order to minimize boilerplate code generation process we came up with the idea to union needed commands in one to generate required components for new entities.
+
+| Signature                       | Short Description                                       |
+| ------------------------------- | ------------------------------------------------------- |
+| `app:make-api {name} {--pivot}` | Generate model, factory, resource, policy and migration |
+
+**Note:** with `--pivot` option a pivot model will be generated (pivot model wont have resource and policy for obvious reasons).
 
 ## Linting
 
@@ -20,7 +31,7 @@ Following artisan console command was added on top of the PHP_CodeSniffer:
 
 -   [x] Add PHP_CodeSniffer lint.
 -   [x] Remove package.json and sass/js default resources.
--   [ ] Add `app:make-api` shorthand command.
+-   [x] Add `app:make-api` shorthand command.
 -   [ ] Setup common response marcos.
 -   [ ] Adjust test, request, console command stubs.
 -   [ ] Remove console, channels, web routes and configure the route service providers.
