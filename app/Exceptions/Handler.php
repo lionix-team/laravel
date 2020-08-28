@@ -13,7 +13,15 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        \League\OAuth2\Server\Exception\OAuthServerException::class,
+        \Illuminate\Validation\UnauthorizedException::class,
+        \Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class,
+        \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException::class,
+        \Illuminate\Auth\Access\AuthorizationException::class,
+        \Illuminate\Auth\AuthenticationException::class,
+        \Illuminate\Http\Exceptions\ThrottleRequestsException::class,
+        \Illuminate\Validation\ValidationException::class,
+        \Symfony\Component\Console\Exception\CommandNotFoundException::class,
     ];
 
     /**
@@ -25,6 +33,22 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+    /**
+     * Get the context with request and url variables for logging.
+     *
+     * @return array
+     */
+    protected function context()
+    {
+        return array_merge(
+            parent::context(),
+            [
+                'url' => request()->fullUrl(),
+                'request' => request()->except($this->dontFlash),
+            ]
+        );
+    }
 
     /**
      * Report or log an exception.
