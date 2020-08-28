@@ -45,6 +45,7 @@ response()->success(new UserResource($user)); // {"success":true,"data":{"id":1,
         "email": "email@mail.com"
     }
 }
+
 /**
  * @param string $message
  * @param int? $status (200)
