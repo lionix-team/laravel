@@ -2,7 +2,14 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -51,29 +58,72 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Report or log an exception.
+     * Create a response object from the given validation exception.
      *
-     * @param  \Throwable  $exception
-     * @return void
-     *
-     * @throws \Exception
+     * @param  \Illuminate\Validation\ValidationException  $e
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function report(Throwable $exception)
+    protected function convertValidationExceptionToResponse(ValidationException $e, $request)
     {
-        parent::report($exception);
+        return response()
+            ->error($e->errors(), $e->status);
+    }
+
+    /**
+     * Convert an authentication exception into a response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        return response()
+            ->unauthenticated($exception->getMessage());
+    }
+
+    /**
+     * Define if given exception should render as not found.
+     *
+     * @param  \Throwable  $e
+     * @return boolean
+     */
+    protected function isHttpNotFoundException(Throwable $e)
+    {
+        return $e instanceof NotFoundHttpException || $e instanceof ModelNotFoundException || $e instanceof MethodNotAllowedHttpException;
+    }
+
+    /**
+     * Define if given exception should render as forbidden.
+     *
+     * @param  \Throwable  $e
+     * @return boolean
+     */
+    protected function isForbiddenException(Throwable $e)
+    {
+        return $e instanceof ThrottleRequestsException || $e instanceof AuthorizationException;
     }
 
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $exception
+     * @param \Illuminate\Http\Request $request   Request class instance
+     * @param \Throwable               $exception Throwable class instance
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $exception)
+    public function render($request, Throwable $e)
     {
-        return parent::render($request, $exception);
+        if ($this->isHttpNotFoundException($e)) {
+            return response()->notFound($e->getMessage() ?: trans('messages.http.404'));
+        }
+
+        if ($this->isForbiddenException($e)) {
+            return response()->forbidden($e->getMessage());
+        }
+
+        return parent::render($request, $e);
     }
 }

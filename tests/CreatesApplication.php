@@ -13,9 +13,14 @@ trait CreatesApplication
      */
     public function createApplication()
     {
-        $app = require __DIR__.'/../bootstrap/app.php';
+        $app = require __DIR__ . '/../bootstrap/app.php';
 
         $app->make(Kernel::class)->bootstrap();
+
+        $app->singleton(
+            \Illuminate\Contracts\Debug\ExceptionHandler::class,
+            \Tests\ExceptionHandler::class
+        );
 
         return $app;
     }

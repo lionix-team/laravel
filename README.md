@@ -103,7 +103,6 @@ response()->paginated(User::paginate(), UserResource::class);
 -   [x] Setup common response marcos.
 -   [x] Adjust test, request, console command stubs.
 -   [x] Remove console, channels, web routes and configure the route service providers.
--   [ ] Add Guards and guard validation rule.
 -   [x] Install and configure `laravel/passport`.
--   [ ] Add Services/Repositories (service providers, example `UserService` implementation).
--   [ ] Setup testing environment (phpunit.xml, exception handler, passport migraitions, response macro, resource, guards helpers).
+-   [x] Add Services/Repositories.
+-   [x] Setup testing environment (phpunit.xml, exception handler, passport migraitions, response macro, resource helpers).
