@@ -101,7 +101,7 @@ response()->paginated(User::paginate(), UserResource::class);
 -   [x] Remove package.json and sass/js default resources.
 -   [x] Add `app:make-api` shorthand command.
 -   [x] Setup common response marcos.
--   [ ] Adjust test, request, console command stubs.
+-   [x] Adjust test, request, console command stubs.
 -   [ ] Remove console, channels, web routes and configure the route service providers.
 -   [ ] Add Guards and guard validation rule.
 -   [ ] Install and configure `laravel/passport`.
